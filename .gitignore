@@ -1,0 +1,12 @@
+# Dependency directories
+node_modules/
+.next/
+
+# Terraform directories and state files
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Environment variables (Never upload secrets!)
+.env
