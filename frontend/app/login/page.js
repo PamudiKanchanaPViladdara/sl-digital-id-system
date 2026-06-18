@@ -1,100 +1,136 @@
-// frontend/app/login/page.js
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
 
-export default function Login() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('http://13.201.122.31/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // 1. Save the JWT token and user role securely in the browser
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.role);
-
-        // 2. Redirect the user based on their role
-        if (data.role === 'admin') {
-          router.push('/'); // Send admins to the main dashboard
-        } else {
-          router.push('/citizen'); // Send citizens to the document request page
-        }
-      } else {
-        setError(data.message || 'Invalid login credentials.');
-      }
-    } catch (err) {
-      setError('Network error. Cannot connect to the server.');
-    } finally {
+    // We will connect this to your AWS backend in the next step!
+    setTimeout(() => {
       setIsLoading(false);
-    }
+      window.location.href = '/dashboard'; // Temporary fake redirect
+    }, 1500);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-slate-50 font-sans text-black">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm border border-slate-100">
-        
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-slate-800">System Login</h1>
-          <p className="text-sm text-slate-500 mt-1">Sri Lanka Identity Portal</p>
+    <div className="min-h-screen flex bg-[#f7f9fb] font-sans text-[#191c1e]">
+      
+      {/* Left Side: Branding & Info (Hidden on Mobile) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-[#001e40] text-white flex-col justify-between p-12 relative overflow-hidden">
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-12">
+            <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center">
+              <ShieldCheck size={24} className="text-[#a7c8ff]" />
+            </div>
+            <div>
+              <div className="font-bold text-xl tracking-tight">GovDocs Sri Lanka</div>
+              <div className="text-xs text-[#a7c8ff] uppercase tracking-wider">State Services Portal</div>
+            </div>
+          </div>
+          
+          <h1 className="text-4xl font-bold leading-tight mb-6">
+            Secure Access to Your<br/><span className="text-[#a7c8ff]">Digital Identity</span>
+          </h1>
+          <p className="text-[#a7c8ff] leading-relaxed max-w-md">
+            The unified portal for citizens and administrators. Authenticate securely to manage documents, track applications, and verify state records.
+          </p>
         </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-rose-100 text-rose-800 text-sm font-medium rounded">
-            {error}
-          </div>
-        )}
+        {/* Decorative Background Element */}
+        <ShieldCheck size={400} className="absolute -bottom-20 -left-20 text-white opacity-5" />
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <div className="relative z-10 text-xs text-[#a7c8ff]">
+          © 2024 Government of Sri Lanka. Secured by SL-CERT.
+        </div>
+      </div>
+
+      {/* Right Side: Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
           
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Email Address</label>
-            <input 
-              type="email" 
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@gov.lk"
-              className="w-full border border-slate-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          {/* Mobile Header (Only visible on small screens) */}
+          <div className="flex lg:hidden items-center gap-3 mb-10">
+            <div className="w-10 h-10 bg-[#001e40] rounded flex items-center justify-center">
+              <ShieldCheck size={24} className="text-[#a7c8ff]" />
+            </div>
+            <div>
+              <div className="font-bold text-xl tracking-tight text-[#001e40]">GovDocs Sri Lanka</div>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Password</label>
-            <input 
-              type="password" 
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full border border-slate-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <h2 className="text-2xl font-bold text-[#191c1e] mb-2">Sign in to your account</h2>
+          <p className="text-sm text-[#737780] mb-8">Enter your registered email and password to continue.</p>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            
+            {/* Email Field */}
+            <div>
+              <label className="block text-xs font-bold text-[#43474f] uppercase tracking-wider mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#737780]">
+                  <Mail size={18} />
+                </div>
+                <input 
+                  type="email" 
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#c3c6d1] rounded-lg focus:outline-none focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors text-[#191c1e] text-sm"
+                  placeholder="name@example.com"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-[#43474f] uppercase tracking-wider">
+                  Password
+                </label>
+                <a href="#" className="text-xs font-bold text-[#0058be] hover:underline">Forgot Password?</a>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#737780]">
+                  <Lock size={18} />
+                </div>
+                <input 
+                  type="password" 
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#c3c6d1] rounded-lg focus:outline-none focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors text-[#191c1e] text-sm"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="w-full bg-[#001e40] hover:bg-[#003366] text-white py-3 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>Sign In <ArrowRight size={18} /></>
+              )}
+            </button>
+          </form>
+
+          {/* Registration Prompt */}
+          <div className="mt-8 text-center text-sm text-[#43474f]">
+            Don't have an account? <a href="#" className="font-bold text-[#0058be] hover:underline">Register here</a>
           </div>
 
-          <button 
-            type="submit" 
-            disabled={isLoading}
-            className="mt-4 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded transition disabled:bg-slate-400"
-          >
-            {isLoading ? 'Authenticating...' : 'Secure Login'}
-          </button>
-          
-        </form>
+        </div>
       </div>
     </div>
   );
